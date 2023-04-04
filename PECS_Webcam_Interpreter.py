@@ -1,67 +1,49 @@
 import cv2
 import numpy as np
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 # Load the trained model
-model = load_model("object_recognition_model.h5")
+model = load_model('Model/pecs_recognition_model.h5')
 
-# Load the class indices file
-class_indices = np.load('class_indices.npy', allow_pickle=True).item()
+# Load the class indices
+class_indices = np.load('Model/class_indices.npy', allow_pickle=True).item()
 
-# Map class indices to corresponding labels
-labels = {v: k for k, v in class_indices.items()}
+# Define the labels for the classes
+class_labels = {v: k for k, v in class_indices.items()}
+
+# Create a window to display the camera feed
+cv2.namedWindow('Object Classification')
 
 # Open the default camera
 cap = cv2.VideoCapture(1)
-
-# Set minimum confidence level for detection
-confidence_threshold = 0.5
 
 while True:
     # Read a frame from the camera
     ret, frame = cap.read()
 
-    # Get frame dimensions
-    height, width, _ = frame.shape
+    # Preprocess the frame
+    img = cv2.resize(frame, (256, 256))
+    img = img / 255.0
+    img = np.expand_dims(img, axis=0)
 
-    # Preprocess the frame for the model
-    preprocessed_frame = cv2.resize(frame, (256, 256))
-    preprocessed_frame = preprocessed_frame.astype('float32') / 255.0
-    preprocessed_frame = np.expand_dims(preprocessed_frame, axis=0)
+    # Use the trained model to predict the class
+    predictions = model.predict(img)
+    class_index = np.argmax(predictions[0])
+    
+    # Check if the prediction confidence is greater than 80%
+    if predictions[0][class_index] > 0.9:
+        class_label = f"{class_labels[class_index]}: {predictions[0][class_index]*100:.2f}%"
+    else:
+        class_label = "Waiting for detection"
 
-    # Use the model to predict the classes of objects in the frame
-    predictions = model.predict(preprocessed_frame)
+    # Display the class label on the camera feed
+    cv2.putText(frame, class_label, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-    # Filter out predictions with low confidence
-    detections = []
-    if len(predictions) > 0:
-        for index, confidence in enumerate(predictions[0]):
-            if confidence > confidence_threshold:
-                detections.append((index, confidence))
+    # Display the camera feed
+    cv2.imshow('Object Classification', frame)
 
-    # Draw bounding boxes around detected objects
-    for detection in detections:
-        # Get the class label of the detected object
-        class_index = detection[0]
-        class_label = labels[class_index]
-
-        # Get the coordinates of the detected object
-        x, y, w, h = detection[1:5] * np.array([width, height, width, height])
-        left = int(x - w/2)
-        top = int(y - h/2)
-        right = int(x + w/2)
-        bottom = int(y + h/2)
-
-        # Draw the bounding box and label of the detected object
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-        cv2.putText(frame, class_label, (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-    # Display the frame
-    cv2.imshow('Object Detection', frame)
-
-    # Wait for a key press and check if it is the 'q' key
-    key = cv2.waitKey(1)
-    if key == ord('q'):
+    # Press 'q' to quit the program
+    if cv2.waitKey(1) == ord('q'):
         break
 
 # Release the camera and close the window
