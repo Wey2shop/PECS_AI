@@ -47,5 +47,5 @@ def update_plot(i):
     return training_acc_line, val_acc_line, training_loss_line, val_loss_line
 
 # Create an animation using the update function and show the plot
-ani = animation.FuncAnimation(fig, update_plot, interval=60000)
+ani = animation.FuncAnimation(fig, update_plot, interval=10000)
 plt.show()

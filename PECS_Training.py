@@ -14,7 +14,7 @@ train_dir = os.path.join(base_dir, "train")
 val_dir = os.path.join(base_dir, "valid")
 test_dir = os.path.join(base_dir, "test")
 # Set the number of classes and batch size
-num_classes = 2
+num_classes = 4
 batch_size = 64
 
 # def lr_schedule(epoch):
@@ -42,7 +42,8 @@ train_datagen = ImageDataGenerator(
     width_shift_range=0.1,
     height_shift_range=0.1,
     zoom_range=0.1,
-    vertical_flip=True
+    vertical_flip=True,
+    fill_mode='nearest'
 )
 
 # Data augmentation for validation set
@@ -115,7 +116,7 @@ csv_logger = CSVLogger('LOGS/training.log')
 history = model.fit(
     train_generator,
     steps_per_epoch=train_generator.samples // batch_size,
-    epochs=32,
+    epochs=100,
     validation_data=validation_generator,
     validation_steps=validation_generator.samples // batch_size,
     callbacks=[checkpoint, csv_logger, lr_scheduler])

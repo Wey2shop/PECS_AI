@@ -1,0 +1,5 @@
+biscuit	cake	choosing	milk
+biscuit	0.98	0.02	0.0	0.0
+cake	0.0	1.0	0.0	0.0
+choosing	0.0	0.02	0.98	0.0
+milk	0.0	0.02	0.02	0.96

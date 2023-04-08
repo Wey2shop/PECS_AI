@@ -31,7 +31,7 @@ while True:
     class_index = np.argmax(predictions[0])
     
     # Check if the prediction confidence is greater than 80%
-    if predictions[0][class_index] > 0.9:
+    if predictions[0][class_index] > 0.8:
         class_label = f"{class_labels[class_index]}: {predictions[0][class_index]*100:.2f}%"
     else:
         class_label = "Waiting for detection"
