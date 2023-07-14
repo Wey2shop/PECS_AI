@@ -1,7 +1,7 @@
 ## Machine Vision for Non-Verbal Communication
 # Overview
 
-The goal of this project is to develop a machine vision system that can identify cards with pictures & symbols, and use text-to-speech (TTS) technology to give a non-verbal child a voice. The system will use a camera to capture images of the cards, and then use image recognition algorithms to identify the card's content. Once the content has been identified, the words will be sent to a Chat-GPT type model, where the identified content will be summarized and converted into a sentence representative of the symbols that have been chosen by the child. This sentence is then converted to speech using a TTS engine.
+The goal of this project is to develop a machine vision system that can identify cards with pictures & symbols, and use text-to-speech (TTS) technology to give a non-verbal child a voice. The system will use a camera to capture images of the cards, and then use image recognition algorithms to identify the card's content. Once the content has been identified, the words will be sent to a LLM model, where the identified content will be summarized and converted into a sentence representative of the symbols that have been chosen by the child. This sentence is then converted to speech using a TTS engine.
 
 [![Webcam Based Demo Application](https://raw.githubusercontent.com/Wey2shop/PECS_AI/main/DEMO.PNG)](https://wey2shop.github.io/PECS_AI/index.html)
 
